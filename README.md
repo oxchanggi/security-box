@@ -1,2 +1,3 @@
 ## Description
-    Server storage and secure private key of loot bot 
+
+    Server storage and secure private key oftelegram bot
