@@ -1,0 +1,44 @@
+version: "3.8"
+services:
+  app:
+    image: loot-bot-security-box:1.0.0-dev
+    container_name: loot-bot-security-box-dev
+    build:
+      context: .
+      dockerfile: docker/nest/dev.dockerfile
+    working_dir: /home/node/workspace
+    command: npm run start:debug
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - .:/home/node/workspace
+      - /home/node/workspace/node_modules
+    networks:
+      - loot-bot-network
+    env_file:
+      - .env.dev
+    ports:
+      - '8002:8002'
+
+  database:
+    container_name: loot-bot-database
+    image: postgres:14.1
+    restart: unless-stopped
+    volumes:
+      - loot-bot-database:/var/lib/postgres
+      - ./docker/postgres:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - 5432:5432
+    networks:
+      - loot-bot-network
+
+networks:
+  loot-bot-network:
+    driver: bridge
+
+volumes:
+  loot-bot-database:
+    driver: local
